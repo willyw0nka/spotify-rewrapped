@@ -7,7 +7,7 @@ class DataManager:
         # Read input files
         self.df = pd.DataFrame()
         for file in files:
-            print(f"Matched file {file}")
+            print(f"Matched input file {file}")
             data_frame = pd.read_json(file)
             self.df = pd.concat([self.df, data_frame], axis=0)
         

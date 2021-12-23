@@ -3,11 +3,11 @@ import matplotlib as mpl
 import matplotlib.font_manager as font_manager
 
 class PlotGenerator:
-    def __init__(self, path='./', style='./spotify.mplstyle'):
+    def __init__(self, path='./', style='./resources/spotify.mplstyle', font='./resources/gotham-medium.otf'):
         self.path = path
-        font_manager.fontManager.addfont('./gotham-medium.otf')
+        font_manager.fontManager.addfont(font)
         mpl.style.use(style)
-        mpl.rcParams['font.family'] = 'Gotham Medium'
+        mpl.rcParams['font.family'] = 'Gotham'
     
     def top_artists_by_hours_streamed(self, data):
         plt.figure(figsize=(12, 6), dpi=60)
@@ -49,8 +49,8 @@ class PlotGenerator:
             selected_artist = data[data.index == artist]
             plt.plot(range(52), selected_artist.hours_played, label=artist)
 
-        x_labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', ' October', 'November', 'December']
-        x_ticks = [5, 9, 14, 18, 23, 27, 31, 36, 40, 45, 49, 53]
+        x_labels = ['New year', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', ' October', 'November', 'December']
+        x_ticks = [0, 5, 9, 14, 18, 23, 27, 31, 36, 40, 45, 49, 53]
         plt.xticks(x_ticks, x_labels, rotation='45')
         plt.legend()
         plt.suptitle('Top played artists through the year', fontsize=15)
