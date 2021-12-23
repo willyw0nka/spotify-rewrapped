@@ -16,88 +16,32 @@ path = 'D:/spotify-unwrapped-plots'
 
 # Configure matplotlib
 pg = PlotGenerator(path=path, style='./spotify.mplstyle')
-
-font_manager.fontManager.addfont('./gotham-medium.otf')
-style = './spotify.mplstyle'
-mpl.style.use(style)
-mpl.rcParams['font.family'] = 'Gotham Medium'
-
 dm = DataManager(glob.glob('D:/Documents/user-data/spotify/StreamingHistory[0-9].json'))
 
-# Top artists by minutes_played
+# Top artists by hours_played
 top = dm.get_top_n_artists(20)
-
-plt.figure(figsize=(12, 6), dpi=60)
-plt.barh(top.index, top.hours_played)
-plt.suptitle('Top played artists by hours')
-plt.savefig(f'{path}/top-artists.png')
-plt.clf()
+pg.top_artists_by_hours_streamed(top)
 
 
 # Filter by hours
 hour = dm.get_streamed_hours_by_time_of_day()
-
-plt.figure(figsize=(12, 6), dpi=60)
-plt.bar(hour.index, hour.hours_played)
-plt.xticks(range(24), range(24))
-plt.suptitle('Hours played by time of day')
-plt.savefig(f'{path}/hourly-plot.png')
-plt.clf()
+pg.streamed_hours_by_time_of_the_day(hour)
 
 # Filter by day of week
-day_of_week = dm.get_streamed_hours_by_day_of_week()
-
-morning_times = day_of_week['morning']
-afternoon_times = day_of_week['afternoon']
-evening_times = day_of_week['evening']
-night_times = day_of_week['night']
-
-
-plt.figure(figsize=(12, 6), dpi=60)
-days_labels = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
-
-# Plot morning times
-plt.bar(morning_times.index, morning_times.hours_played, label='Morning (6 to 12)')
-# Plot afternoon times
-plt.bar(afternoon_times.index, afternoon_times.hours_played, bottom=morning_times.hours_played, label='Afternoon (13 to 17)')
-# Plot evening times
-plt.bar(evening_times.index, evening_times.hours_played, bottom=morning_times.hours_played+afternoon_times.hours_played, label='Evening (18 to 21)')
-# Plot night times
-plt.bar(night_times.index, night_times.hours_played, bottom=morning_times.hours_played+afternoon_times.hours_played+evening_times.hours_played, label='Night (22 to 5)')
-plt.xticks(range(7), days_labels)
-plt.suptitle('Hours played by day of the week')
-plt.legend()
-plt.savefig(f'{path}/day-of-the-week-plot.png')
-plt.clf()
+day_of_the_week = dm.get_streamed_hours_by_day_of_week()
+pg.streamed_hours_by_day_of_the_week(day_of_the_week)
 
 # Cumsum by week (now it has a more decent implementation)
 cumsum = dm.get_cumsum_by_week(10)
 top_artists = list(dm.get_top_n_artists(10).index)
 top_artists.reverse()
 
-plt.figure(figsize=(12, 6), dpi=120)
-for artist in top_artists:
-    print(artist)
-    selected_artist = cumsum[cumsum.index == artist]
-    plt.plot(range(52), selected_artist.hours_played, label=artist)
+pg.cumsum_by_week(cumsum, top_artists)
 
-x_labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', ' October', 'November', 'December']
-plt.xticks([w for w in range(0, 48) if w % 4 == 0], x_labels, rotation='45')
-plt.legend()
-plt.suptitle('Top played artists through the year')
-plt.savefig(f'{path}/artists-through-the-year.png')
-plt.clf()
 
 # Get percent of hours played in top artists
 hours = dm.get_percent_hours_played_in_top_artists(20)
-
-plt.figure(figsize=(12, 6), dpi=60)
-colors = ['#1db954', '#535353']
-explode = (0.1, 0)
-plt.pie(hours, colors=colors, autopct='%1.0f%%', textprops={'fontsize': 18}, explode=explode)
-plt.suptitle('My top 20 artists vs others streaming time')
-plt.savefig(f'{path}/top-20-pie.png')
-plt.clf()
+pg.pie_top_streamed_artists(hours)
 
 # Achievements
 # Hours streaming all i want for christmas is you
