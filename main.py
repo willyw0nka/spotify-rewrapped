@@ -1,16 +1,8 @@
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-import matplotlib as mpl
 import glob
-from PIL import Image
-from PIL import ImageFont
-from PIL import ImageDraw
-import matplotlib.font_manager as font_manager
-from datetime import date
 
 from DataManager import DataManager
 from PlotGenerator import PlotGenerator
+from ImageGenerator import ImageGenerator
 
 path = 'D:/spotify-unwrapped-plots'
 
@@ -64,37 +56,36 @@ pg.pie_top_streamed_artists(hours)
 # variety_is_the_spice_of_life = top_hours / total_hours # < 0.25
 
 ## GENERATE IMAGE
-W, H = (1500, 2000)
-title = 'Spotify rewrapped'
+ig = ImageGenerator(size = (1500, 2000))
+ig.add_font('title', 'gotham-medium.otf', 60)
+ig.add_font('achievement-title', 'gotham-medium.otf', 24)
+ig.add_font('achievement-body', 'gotham-medium.otf', 18)
+ig.add_font('icons', 'font-awesome-5-free-solid-900.otf', 58)
 
-background = Image.new('RGB', (W, H), color = (25, 20, 20))
-bg_w, bg_h = background.size
-title_font = ImageFont.truetype('gotham-medium.otf', 48)
 
 # Draw title
-draw = ImageDraw.Draw(background)
-w, h = draw.textsize(title, font=title_font)
-draw.text(((W-w)/2, 25), title,(255,255,255),font=title_font)
+ig.write_text('Spotify rewrapped', 'title', (0, 50), horizontal_center=True)
 
 # Draw top played artists plot
-plot = Image.open(f'{path}/top-artists.png', 'r')
-background.paste(plot, (25, 125))
+ig.paste_image(f'{path}/top-artists.png', (25, 175))
 
 # Draw top played artists plot
-plot = Image.open(f'{path}/top-20-pie.png', 'r')
-background.paste(plot, (750, 125))
+ig.paste_image(f'{path}/top-20-pie.png', (750, 175))
 
 # Draw hourly plot
-plot = Image.open(f'{path}/hourly-plot.png', 'r')
-background.paste(plot, (25, 500))
+ig.paste_image(f'{path}/hourly-plot.png', (25, 550))
 
 # Draw day of the week plot
-plot = Image.open(f'{path}/day-of-the-week-plot.png', 'r')
-background.paste(plot, (750, 500))
+ig.paste_image(f'{path}/day-of-the-week-plot.png', (750, 550))
 
 # Draw artists through the year
-plot = Image.open(f'{path}/artists-through-the-year.png', 'r')
-background.paste(plot, (25, 1000))
+ig.paste_image(f'{path}/artists-through-the-year.png', (25, 925))
+
+#Achievements
+ig.show_achievement(u'\uf7aa', (25, 1700), (100, 100), 'Christmas spirit', 'I streamed at least 1 hour of\nAll I Want for Christmas Is You by Mariah Carey\n({:.2f}/{:.1f})'.format(0.42360786, 1.0), False)
+ig.show_achievement(u'\uf717', ((ig.W/2) + 25, 1700), (100, 100), 'The deffinitive Halloween experience', 'I streamed Thriller by Michael Jackson in 2021', True)
+ig.show_achievement(u'\uf6d7', (25, 1850), (100, 100), 'Variety is the Spice of Life', 'Less than 30% of my total streams are from my\ntop 20 streamed artists', True)
+ig.show_achievement(u'\uf274', ((ig.W/2) + 25, 1850), (100, 100), 'Everyday routine', 'I streamed at least one track every day of 2021', False)
 
 # Save image
-background.save(f'{path}/spotify-rewrapped.png')
+ig.save(f'{path}/spotify-rewrapped.png')

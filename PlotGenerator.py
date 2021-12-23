@@ -12,7 +12,8 @@ class PlotGenerator:
     def top_artists_by_hours_streamed(self, data):
         plt.figure(figsize=(12, 6), dpi=60)
         plt.barh(data.index, data.hours_played)
-        plt.suptitle('Top played artists by hours')
+        plt.suptitle('Top played artists', fontsize=30)
+        plt.xlabel('Hours', fontsize=20)
         plt.savefig(f'{self.path}/top-artists.png')
         plt.clf()
 
@@ -20,7 +21,7 @@ class PlotGenerator:
         plt.figure(figsize=(12, 6), dpi=60)
         plt.bar(data.index, data.hours_played)
         plt.xticks(range(24), range(24))
-        plt.suptitle('Hours played by time of day')
+        plt.suptitle('Hours played by time of day', fontsize=30)
         plt.savefig(f'{self.path}/hourly-plot.png')
         plt.clf()
     
@@ -37,7 +38,7 @@ class PlotGenerator:
         # Plot night times
         plt.bar(data['night'].index, data['night'].hours_played, bottom=data['morning'].hours_played+data['afternoon'].hours_played+data['evening'].hours_played, label='Night (22 to 5)')
         plt.xticks(range(7), days_labels)
-        plt.suptitle('Hours played by day of the week')
+        plt.suptitle('Hours played by day of the week', fontsize=30)
         plt.legend()
         plt.savefig(f'{self.path}/day-of-the-week-plot.png')
         plt.clf()
@@ -45,14 +46,13 @@ class PlotGenerator:
     def cumsum_by_week(self, data, top_artists):
         plt.figure(figsize=(12, 6), dpi=120)
         for artist in top_artists:
-            print(artist)
             selected_artist = data[data.index == artist]
             plt.plot(range(52), selected_artist.hours_played, label=artist)
 
         x_labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', ' October', 'November', 'December']
         plt.xticks([w for w in range(0, 48) if w % 4 == 0], x_labels, rotation='45')
         plt.legend()
-        plt.suptitle('Top played artists through the year')
+        plt.suptitle('Top played artists through the year', fontsize=15)
         plt.savefig(f'{self.path}/artists-through-the-year.png')
         plt.clf()
     
@@ -61,6 +61,6 @@ class PlotGenerator:
         colors = ['#1db954', '#535353']
         explode = (0.1, 0)
         plt.pie(data, colors=colors, autopct='%1.0f%%', textprops={'fontsize': 18}, explode=explode)
-        plt.suptitle('My top 20 artists vs others streaming time')
+        plt.suptitle('My top 20 artists vs others streaming time', fontsize=30)
         plt.savefig(f'{self.path}/top-20-pie.png')
         plt.clf()
