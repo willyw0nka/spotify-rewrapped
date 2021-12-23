@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from datetime import datetime
 
 class DataManager:
     def __init__(self, files=None):
@@ -72,3 +73,28 @@ class DataManager:
                                     .cumsum()
         
         return hours_by_week
+    
+    def all_i_want_for_christmas_is_you(self):
+        data = self.df[(self.df.trackName.str.startswith('All I Want for Christmas Is You'))]
+        hours = 0
+        if data.shape[0] > 0:
+            hours = data.groupby('trackName')\
+                        .agg({'hours_played': np.sum})\
+                        .hours_played[0]
+        return {'achieved': hours >= 1,
+                'hours': hours}
+    
+    def deffinitive_halloween_experience(self):
+        return self.df[(self.df.trackName == 'Thriller') & 
+                       (self.df.artistName == 'Michael Jackson') & 
+                       ((self.df.endTime.dt.month == 10) & (self.df.endTime.dt.day == 31) |
+                        (self.df.endTime.dt.month == 11) & (self.df.endTime.dt.day == 1))].shape[0] > 0
+    
+    def days_streamed(self):
+        days = self.df.groupby('date').size().size
+        return {'achieved': days == 365,
+                'days': days}
+    
+    def variety_is_the_spice_of_life(self):
+        top_hours, others_hours = self.get_percent_hours_played_in_top_artists(20)
+        return top_hours / (top_hours + others_hours) < 0.3

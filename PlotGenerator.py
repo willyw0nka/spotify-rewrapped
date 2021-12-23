@@ -50,7 +50,8 @@ class PlotGenerator:
             plt.plot(range(52), selected_artist.hours_played, label=artist)
 
         x_labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', ' October', 'November', 'December']
-        plt.xticks([w for w in range(0, 48) if w % 4 == 0], x_labels, rotation='45')
+        x_ticks = [5, 9, 14, 18, 23, 27, 31, 36, 40, 45, 49, 53]
+        plt.xticks(x_ticks, x_labels, rotation='45')
         plt.legend()
         plt.suptitle('Top played artists through the year', fontsize=15)
         plt.savefig(f'{self.path}/artists-through-the-year.png')
@@ -60,7 +61,7 @@ class PlotGenerator:
         plt.figure(figsize=(12, 6), dpi=60)
         colors = ['#1db954', '#535353']
         explode = (0.1, 0)
-        plt.pie(data, colors=colors, autopct='%1.0f%%', textprops={'fontsize': 18}, explode=explode)
+        plt.pie(data, colors=colors, autopct='%1.0f%%', textprops={'fontsize': 36}, explode=explode)
         plt.suptitle('My top 20 artists vs others streaming time', fontsize=30)
         plt.savefig(f'{self.path}/top-20-pie.png')
         plt.clf()

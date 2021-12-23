@@ -33,11 +33,11 @@ class ImageGenerator:
         plot = Image.open(path, 'r')
         self.background.paste(plot, position)
     
-    def show_achievement(self, icon, position, size, title, description, completed):
+    def show_achievement(self, icon, position, size, title, description, achieved):
         draw = ImageDraw.Draw(self.background)
         rect_coords = [position,
                        (position[0] + size[0], position[1] + size[1])]
-        rect_color = self.colors['foreground'] if completed else self.colors['light-gray']
+        rect_color = self.colors['foreground'] if achieved else self.colors['light-gray']
         draw.rounded_rectangle(rect_coords, fill=rect_color, radius=7)
         
         w, h = draw.textsize(icon, font=self.fonts['icons'])
