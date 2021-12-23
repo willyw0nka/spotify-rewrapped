@@ -56,7 +56,7 @@ pg.pie_top_streamed_artists(hours)
 # variety_is_the_spice_of_life = top_hours / total_hours # < 0.25
 
 ## GENERATE IMAGE
-ig = ImageGenerator(size = (1500, 2000))
+ig = ImageGenerator(size = (1500, 2200))
 ig.add_font('title', 'gotham-medium.otf', 60)
 ig.add_font('achievement-title', 'gotham-medium.otf', 24)
 ig.add_font('achievement-body', 'gotham-medium.otf', 18)
@@ -65,6 +65,9 @@ ig.add_font('icons', 'font-awesome-5-free-solid-900.otf', 58)
 
 # Draw title
 ig.write_text('Spotify rewrapped', 'title', (0, 50), horizontal_center=True)
+
+# Draw github corner
+ig.paste_image(f'./github-corner-left.png', (0, 0))
 
 # Draw top played artists plot
 ig.paste_image(f'{path}/top-artists.png', (25, 175))
@@ -84,8 +87,11 @@ ig.paste_image(f'{path}/artists-through-the-year.png', (25, 925))
 #Achievements
 ig.show_achievement(u'\uf7aa', (25, 1700), (100, 100), 'Christmas spirit', 'I streamed at least 1 hour of\nAll I Want for Christmas Is You by Mariah Carey\n({:.2f}/{:.1f})'.format(0.42360786, 1.0), False)
 ig.show_achievement(u'\uf717', ((ig.W/2) + 25, 1700), (100, 100), 'The deffinitive Halloween experience', 'I streamed Thriller by Michael Jackson in 2021', True)
-ig.show_achievement(u'\uf6d7', (25, 1850), (100, 100), 'Variety is the Spice of Life', 'Less than 30% of my total streams are from my\ntop 20 streamed artists', True)
+ig.show_achievement(u'\uf200', (25, 1850), (100, 100), 'Variety is the Spice of Life', 'Less than 30% of my total streams are from my\ntop 20 streamed artists', True)
 ig.show_achievement(u'\uf274', ((ig.W/2) + 25, 1850), (100, 100), 'Everyday routine', 'I streamed at least one track every day of 2021', False)
+
+ig.write_text('Find me on github: https://github.com/willyw0nka/spotify-rewrapped', 'achievement-title', (0, 2100), horizontal_center=True)
+ig.write_text('This is not affiliated with Spotify', 'achievement-title', (0, 2150), color=ig.colors['light-gray'], horizontal_center=True)
 
 # Save image
 ig.save(f'{path}/spotify-rewrapped.png')
