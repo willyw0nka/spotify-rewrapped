@@ -8,7 +8,7 @@ Spotify Rewrapped generates an image summing up 2021 from your Spotify data. I g
 First of all you need to download your Spotify detailed data from the [Spotify privacy settings](https://www.spotify.com/us/account/privacy/). This process can take up to 30 days to complete.
 
 ## On Windows
-1. Download the latest version from the releases tab on this repo.
+1. Download the latest version from the [releases tab](https://github.com/willyw0nka/spotify-rewrapped/releases) on this repo.
 2. Unzip.
 3. Run SpotifyRewrappedGUI.exe
 4. Fill the input path (path where your StreamingHistory.json is located) and the output path (where spotify-rewrapped.png will be generated)
