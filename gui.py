@@ -3,6 +3,7 @@ from tkinter import Tk, W, E, N, filedialog, messagebox
 from tkinter.ttk import Frame, Button, Entry, Style, Label
 
 import glob
+import os
 
 from SpotifyRewrapped import SpotifyRewrapped
 
