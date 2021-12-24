@@ -3,10 +3,10 @@ $Minor = 0
 $Compillation = "$(Get-Date -Format 'yy')$((Get-Date).DayOfYear)"
 $Version = "$Major.$Minor.$Compillation"
 
-pyinstaller.exe ./gui.py
-Copy-Item -Path ./resources ./dist/gui/
+pyinstaller.exe --noconsole -y ./SpotifyRewrappedGUI.py
+Copy-Item -Path ./resources ./dist/SpotifyRewrappedGUI/
 
-Compress-Archive -Path ./dist/gui -DestinationPath ./dist/spotify-rewrapped-$Version.zip
+Compress-Archive -Path ./dist/SpotifyRewrappedGUI -DestinationPath ./dist/spotify-rewrapped-$Version.zip
 
 Write-Output "Build complete!"
 Write-Output "Generated version: $Version"
