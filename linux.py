@@ -1,5 +1,5 @@
 import sys
-from SpotifyRewrapped import SpotifyRewrapped
+from spotify_rewrapped import SpotifyRewrapped
 
 
 input_path = sys.argv[1]
