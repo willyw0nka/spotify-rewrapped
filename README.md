@@ -1,4 +1,7 @@
 # Spotify Rewrapped
+
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/dfe7dcc9aad74c2fa52affcf7c529dd7)](https://app.codacy.com/gh/willyw0nka/spotify-rewrapped?utm_source=github.com&utm_medium=referral&utm_content=willyw0nka/spotify-rewrapped&utm_campaign=Badge_Grade_Settings)
+
 ![Spotify Rewrapped](readme/spotify-rewrapped.png "Spotify Rewrapped")
 Spotify Rewrapped generates an image summing up 2021 from your Spotify data. I got inspired by [this Reddit post](https://www.reddit.com/r/dataisbeautiful/comments/rfkh6r/for_fans_of_spotify_wrapped_you_can_download_your/) and decided to implement my own plots using python.
 
