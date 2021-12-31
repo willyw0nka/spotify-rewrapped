@@ -1,10 +1,17 @@
 """data_manager module. Contains the needed code to store the input data and query it."""
+from typing import Dict
 import numpy as np
 import pandas as pd
 
 class DataManager:
     """It's main responsability is to store the input data and allow querying it."""
-    def __init__(self, files=None):
+    def __init__(self, files: list):
+        """Reads and filters the input data.
+
+        Args:
+            files (list): List of paths where the input data is stored.
+        """
+
         # Read input files
         self.df = pd.DataFrame()
         for file in files:
@@ -31,20 +38,37 @@ class DataManager:
                                             ordered=False)
         self.df['hours_played'] = self.df.msPlayed / (60 * 60 * 1000)
 
-    def get_top_n_artists(self, n):
-        """Returns a list of artist-streamed_hours of your top N streamed artists."""
+    def get_top_n_artists(self, n: int) -> pd.DataFrame:
+        """Calculates the N top streamed artists.
+
+        Args:
+            n (int): Number of artists
+
+        Returns:
+            pd.DataFrame: DataFrame. Columns are artistName and streamed_hours
+        """
         return self.df.groupby('artistName')\
                     .agg({'hours_played': np.sum})\
                     .sort_values(by=['hours_played'], ascending=True)\
                     .tail(n)
 
-    def get_streamed_hours_by_time_of_day(self):
-        """Returns a list of time_of_the_day-hours_played"""
+    def get_streamed_hours_by_time_of_day(self) -> pd.DataFrame:
+        """Calcualtes streamed hours by time of the day.
+
+        Returns:
+            pd.DataFrame: DataFrame. Index is time of the day and value is total hours_played.
+        """
         return self.df.groupby('hour').agg({'hours_played': np.sum})
 
-    def get_streamed_hours_by_day_of_week(self):
-        """Returns a list of streamed hours by day of the week. The indexes are
-        part_of_the_day and day_of_the_week."""
+    def get_streamed_hours_by_day_of_week(self) -> Dict:
+        """Calculates streamed hours by day of the week.
+
+        Returns:
+            Dict: Keys are [morning, afternoon, evening, night]. Each key contains a list of 7 int
+            elements. Each element represents a day of the week and its value is the number of
+            streamed hours on the specified part of the day on the specified day of the week.
+        """
+
         day_of_week = self.df.groupby(['part_of_the_day', 'day_of_week'])\
                             .agg({'hours_played': np.sum})
 
@@ -53,17 +77,25 @@ class DataManager:
                 'evening': day_of_week.loc['Evening'],
                 'night': day_of_week.loc['Night']}
 
-    def get_percent_hours_played_in_top_artists(self, n):
-        """Returns [top_hours, non_top_hours] being top_hours the hours that you
-        streamed your N top streamed artists and non_top_hours the hours that you
-        streamed the rest of the artists."""
+    def get_percent_hours_played_in_top_artists(self, n: int) -> list:
+        """Calculates the streamed hours that are contained on the top N streamed artists and
+        the streamed hours that are contained on the other artists.
+
+        Args:
+            n (int): Number of top artists to set the threshold.
+
+        Returns:
+            list: First element is the hours streaming the top N artists, second element is the
+            hours streaming other artists.
+        """
+
         artists = list(self.get_top_n_artists(n).index)
         total_hours = self.df.hours_played.sum()
         top_hours = self.df[self.df.artistName.isin(artists)].hours_played.sum()
 
         return [top_hours, total_hours - top_hours]
 
-    def get_cumsum_by_week(self, n):
+    def get_cumsum_by_week(self, n: int):
         """Returns the cumsum of your top N streamed artists. Index is artistName,
         each artist has 52 rows, one for each week of the year."""
         top_artists = self.get_top_n_artists(n)
