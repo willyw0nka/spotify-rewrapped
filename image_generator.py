@@ -1,10 +1,10 @@
-"""This module contains the ImageGenerator class which is responsible of generating the final png"""
+"""This module contains the ImageGenerator class which is responsible of generating the final png."""
 from PIL import Image
 from PIL import ImageFont
 from PIL import ImageDraw
 
 class ImageGenerator:
-    """ImageGenerator. Contains the methods that allow creating the final png"""
+    """ImageGenerator. Contains the methods that allow creating the final png."""
     def __init__(self, size=(1500, 2000)):
         self.colors = {'background': (25, 20, 20),
                        'foreground': (29, 185, 84),
@@ -17,15 +17,15 @@ class ImageGenerator:
 
     def add_font(self, name, path, size):
         """Adds a font to the fonts dictionary, this font will be avaliable to
-        use on the other methods"""
+        use on the other methods."""
         self.fonts[name] = ImageFont.truetype(path, size)
 
     def save(self, path):
-        """Saves the image to the specified path"""
+        """Saves the image to the specified path."""
         self.background.save(path)
 
     def write_text(self, text, font, position, horizontal_center=False, color=None):
-        """Writes the specified text on the specified position"""
+        """Writes the specified text on the specified position."""
         text_color = self.colors['white']
         if color is not None:
             text_color = color
@@ -36,12 +36,12 @@ class ImageGenerator:
         draw.text(position, text, text_color,font=self.fonts[font])
 
     def paste_image(self, path, position):
-        """Pastes the specified image on the specified position"""
+        """Pastes the specified image on the specified position."""
         plot = Image.open(path, 'r')
         self.background.paste(plot, position)
 
     def show_achievement(self, icon, position, size, title, description, achieved):
-        """Creates an achievement widget on the specified position"""
+        """Creates an achievement widget on the specified position."""
         draw = ImageDraw.Draw(self.background)
         rect_coords = [position,
                        (position[0] + size[0], position[1] + size[1])]

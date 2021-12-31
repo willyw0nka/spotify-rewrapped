@@ -1,11 +1,11 @@
 """This module contains the PlotGenerator class which is responsible of generating
-the individual plots"""
+the individual plots."""
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 from  matplotlib import font_manager
 
 class PlotGenerator:
-    """PlotGenerator. Contains the methods that allow creating the different plots"""
+    """PlotGenerator. Contains the methods that allow creating the different plots."""
     def __init__(self, path='./',
                  style='./resources/spotify.mplstyle',
                  font='./resources/gotham-medium.otf'):
@@ -15,7 +15,7 @@ class PlotGenerator:
         mpl.rcParams['font.family'] = 'Gotham'
 
     def top_artists_by_hours_streamed(self, data):
-        """Generates a barh plot showing the top 20 top streamed artists"""
+        """Generates a barh plot showing the top 20 top streamed artists."""
         plt.figure(figsize=(12, 6), dpi=60)
         plt.barh(data.index, data.hours_played)
         plt.suptitle('Top played artists', fontsize=30)
@@ -24,7 +24,7 @@ class PlotGenerator:
         plt.clf()
 
     def streamed_hours_by_time_of_the_day(self, data):
-        """Generates a bar plot showing the streamed hours by time of the day"""
+        """Generates a bar plot showing the streamed hours by time of the day."""
         plt.figure(figsize=(12, 6), dpi=60)
         plt.bar(data.index, data.hours_played)
         plt.xticks(range(24), range(24))
@@ -33,7 +33,7 @@ class PlotGenerator:
         plt.clf()
 
     def streamed_hours_by_day_of_the_week(self, data):
-        """Generates a bar plot showing the streamed hours day of the week"""
+        """Generates a bar plot showing the streamed hours day of the week."""
         plt.figure(figsize=(12, 6), dpi=60)
         days_labels = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 
@@ -63,7 +63,7 @@ class PlotGenerator:
 
     def cumsum_by_week(self, data, top_artists):
         """Generates a plot showing the cumulative streamed hours of your top 10
-        top streamed artists, xtick is weeks"""
+        top streamed artists, xtick is weeks."""
         plt.figure(figsize=(12, 6), dpi=120)
         for artist in top_artists:
             selected_artist = data[data.index == artist]
@@ -80,7 +80,7 @@ class PlotGenerator:
 
     def pie_top_streamed_artists(self, data):
         """Generates a pie plot showing the percentage of streamed hours that pertain
-        to your top 20 top streamed artists"""
+        to your top 20 top streamed artists."""
         plt.figure(figsize=(12, 6), dpi=60)
         colors = ['#1db954', '#535353']
         explode = (0.1, 0)
