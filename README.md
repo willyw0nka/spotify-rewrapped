@@ -16,7 +16,8 @@ First of all you need to download your Spotify detailed data from the [Spotify p
 2. Unzip.
 3. Run SpotifyRewrappedGUI.exe
 4. Fill the input path (path where your StreamingHistory.json is located) and the output path (where spotify-rewrapped.png will be generated)
-5. Generate
+5. Optionally, fill out your timezone with quotes (otherwise defaults to UTC). [Wikipedia listed timezones under 'TZ Database Name' column.](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)
+6. Generate
 
 ## On Linux
 1. You need to clone this repo (or download as ZIP) and run the python code.
@@ -26,9 +27,9 @@ First of all you need to download your Spotify detailed data from the [Spotify p
     ```
 3. Run linux.py
     ```bash
-    python3 ./linux.py <input_path> <output_path>
+    python3 ./linux.py <input_path> <output_path> <timezone>
     ```
     for example:
     ```bash
-    python3 ./linux.py /mnt/d/spotify_data /mnt/d/images
+    python3 ./linux.py /mnt/d/spotify_data /mnt/d/images 'US/Pacific'
     ```

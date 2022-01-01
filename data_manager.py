@@ -4,7 +4,7 @@ import pandas as pd
 
 class DataManager:
     """It's main responsability is to store the input data and allow querying it"""
-    def __init__(self, files=None):
+    def __init__(self, files=None, timezone='UTC'):
         # Read input files
         self.df = pd.DataFrame()
         for file in files:
@@ -13,7 +13,7 @@ class DataManager:
             self.df = pd.concat([self.df, data_frame], axis=0)
 
         # Filter and process data
-        self.df.endTime = pd.to_datetime(self.df.endTime)
+        self.df.endTime = pd.to_datetime(self.df.endTime).dt.tz_localize('UTC').dt.tz_convert(timezone)
         self.df = self.df[self.df.endTime.dt.year == 2021]
         self.df = self.df[self.df.msPlayed > 10000]
 
