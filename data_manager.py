@@ -21,7 +21,7 @@ class DataManager:
             self.df = pd.concat([self.df, data_frame], axis=0)
 
         # Filter and process data
-        self.df.endTime = pd.to_datetime(self.df.endTime)
+        self.df.endTime = pd.to_datetime(self.df.endTime).dt.tz_localize('UTC').dt.tz_convert(timezone)
         self.df = self.df[self.df.endTime.dt.year == 2021]
         self.skipped = self.df[self.df.msPlayed <= 10000]
         self.df = self.df[self.df.msPlayed > 10000]

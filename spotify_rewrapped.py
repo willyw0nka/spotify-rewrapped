@@ -10,15 +10,17 @@ from image_generator import ImageGenerator
 class SpotifyRewrapped:
     """Spotify Rewrapped. Main class"""
 
-    def __init__(self, path: str, output: str):
+    def __init__(self, path: str, output: str, timezone: str = 'UTC'):
         """Init method. Calls generate and cleanup methods.
 
         Args:
             path (str): Path where the StreamingHistory.json are located.
             output (str): Path where result png will be generated.
+            timezone (str): Indicates the timezone to use. Default is 'UTC'.
         """
         self.path = path
         self.output = output
+        self.timezone = timezone
         self.generate()
         self.cleanup()
 
@@ -29,7 +31,7 @@ class SpotifyRewrapped:
         pg = PlotGenerator(path=self.path,
                            style='./resources/spotify.mplstyle',
                            font='./resources/gotham-medium.otf')
-        dm = DataManager(glob.glob(f'{self.path}/StreamingHistory[0-9].json'))
+        dm = DataManager(glob.glob(f'{self.path}/StreamingHistory[0-9].json'), timezone=self.timezone)
 
         # Top artists by hours_played
         top = dm.get_top_n_artists(20)
