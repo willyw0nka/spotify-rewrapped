@@ -10,15 +10,21 @@ from image_generator import ImageGenerator
 class SpotifyRewrapped:
     """Spotify Rewrapped. Main class"""
 
-    def __init__(self, path, output):
-        """Init method. Calls generate and cleanup methods."""
+    def __init__(self, path: str, output: str):
+        """Init method. Calls generate and cleanup methods.
+
+        Args:
+            path (str): Path where the StreamingHistory.json are located.
+            output (str): Path where result png will be generated.
+        """
         self.path = path
         self.output = output
         self.generate()
         self.cleanup()
 
     def generate(self):
-        """Calls the PlotGenerator, DataManager and ImageGenerator to create the result."""
+        """Calls the PlotGenerator, DataManager and ImageGenerator to create the result.
+        """
         # Configure matplotlib
         pg = PlotGenerator(path=self.path,
                            style='./resources/spotify.mplstyle',
@@ -121,7 +127,8 @@ class SpotifyRewrapped:
         print('Image generated successfully!')
 
     def cleanup(self):
-        """Removes all the intermediate png generated files."""
+        """Removes all the intermediate png generated files.
+        """
         # Cleanup
         os.remove(f'{self.path}/top-artists.png')
         os.remove(f'{self.path}/top-20-pie.png')

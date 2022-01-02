@@ -95,9 +95,16 @@ class DataManager:
 
         return [top_hours, total_hours - top_hours]
 
-    def get_cumsum_by_week(self, n: int):
-        """Returns the cumsum of your top N streamed artists. Index is artistName,
-        each artist has 52 rows, one for each week of the year."""
+    def get_cumsum_by_week(self, n: int) -> pd.DataFrame:
+        """Calculates the cumulative sum of the top N streamed artists by week.
+
+        Args:
+            n (int): Number of top artists to set the threshold.
+
+        Returns:
+            pd.DataFrame: Index is artist_name, value is cumulative hours.
+            Each artist has 52 rows. Rows are ordered by ascending.
+        """
         top_artists = self.get_top_n_artists(n)
 
         df2 = self.df[self.df.artistName.isin(top_artists.index)]
@@ -129,9 +136,13 @@ class DataManager:
 
         return hours_by_week
 
-    def all_i_want_for_christmas_is_you(self):
-        """Checks if you streamed at least 1 hour of All I Want for Christmas Is You,
-        returns the ammount of hours and True/False on a dictionary."""
+    def all_i_want_for_christmas_is_you(self) -> Dict:
+        """Calculates the total hours streaming All I Want for Christmas Is you by Mariah Carey.
+
+        Returns:
+            Dict: keys are 'achieved' (bool) and 'hours' (float). Achieved is True if hours is
+            more or equals than 1.
+        """
         data = self.df[(self.df.trackName.str.startswith('All I Want for Christmas Is You'))]
         hours = 0
         if data.shape[0] > 0:
@@ -141,23 +152,33 @@ class DataManager:
         return {'achieved': hours >= 1,
                 'hours': hours}
 
-    def deffinitive_halloween_experience(self):
-        """Checks if you streamed Thriller on 31/10/2021 or 1/11/2021,
-        returns True/False."""
+    def deffinitive_halloween_experience(self) -> bool:
+        """Checks if Thiller by Michael Jackson was streamed on 31/10 or 1/11.
+
+        Returns:
+            bool: True if the specified condition is acomplished.
+        """
         return self.df[(self.df.trackName == 'Thriller') &
                        (self.df.artistName == 'Michael Jackson') &
                        ((self.df.endTime.dt.month == 10) & (self.df.endTime.dt.day == 31) |
                         (self.df.endTime.dt.month == 11) & (self.df.endTime.dt.day == 1))].shape[0] > 0
 
-    def days_streamed(self):
-        """Checks if you streamed at least 1 track each day of 2021,
-        returns the ammount of days that you streamed and True/False on a dictionary."""
+    def days_streamed(self) -> Dict:
+        """Calculates the days that the user has streamed one or more tracks.
+
+        Returns:
+            Dict: keys are 'achieved' (bool) and 'days' (int). Achieved is True if days is 365.
+        """
         days = self.df.groupby('date').size().size
         return {'achieved': days == 365,
                 'days': days}
 
-    def variety_is_the_spice_of_life(self):
+    def variety_is_the_spice_of_life(self) -> bool:
         """Checks if your hours streaming your top 20 artists are less or equal
-        that 0.3 compared to the total streamed hours."""
+        that 0.3 compared to the total streamed hours.
+
+        Returns:
+            bool: True is the specified condition is acomplished.
+        """
         top_hours, others_hours = self.get_percent_hours_played_in_top_artists(20)
         return top_hours / (top_hours + others_hours) < 0.3
