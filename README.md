@@ -14,17 +14,19 @@ Spotify Rewrapped generates an image summing up 2021 from your Spotify data. I g
 First of all you need to download your Spotify detailed data from the [Spotify privacy settings](https://www.spotify.com/us/account/privacy/). This process can take up to 30 days to complete.
 
 ## On Windows
-1. Download the latest version from the [releases tab](https://github.com/willyw0nka/spotify-rewrapped/releases) on this repo.
-2. Unzip.
-3. Run SpotifyRewrappedGUI.exe
-4. Fill the input path (path where your StreamingHistory.json is located) and the output path (where spotify-rewrapped.png will be generated)
-5. Optionally, fill out your timezone with quotes (otherwise defaults to UTC). [Wikipedia listed timezones under 'TZ Database Name' column.](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)
-6. Generate
+
+1.  Download the latest version from the [releases tab](https://github.com/willyw0nka/spotify-rewrapped/releases) on this repo.
+2.  Unzip.
+3.  Run SpotifyRewrappedGUI.exe
+4.  Fill the input path (path where your StreamingHistory.json is located) and the output path (where spotify-rewrapped.png will be generated)
+5.  Optionally, fill out your timezone with quotes (otherwise defaults to UTC). [Wikipedia listed timezones under 'TZ Database Name' column.](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)
+6.  Generate
 
 ## On Linux
-1. You need to clone this repo (or download as ZIP) and run the python code.
-2. Install python dependencies
-    ```bash 
+
+1.  You need to clone this repo (or download as ZIP) and run the python code.
+2.  Install python dependencies
+    ```bash
     pip install -r requirements.txt
     ```
 3.  Run linux.py
