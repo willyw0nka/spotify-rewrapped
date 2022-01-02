@@ -1,4 +1,4 @@
-"""spotify_rewrapped module, contains SpotifyRewrapped class"""
+"""spotify_rewrapped module, contains SpotifyRewrapped class."""
 
 import glob
 import os
@@ -10,7 +10,14 @@ from image_generator import ImageGenerator
 class SpotifyRewrapped:
     """Spotify Rewrapped. Main class"""
 
-    def __init__(self, path, output, timezone='UTC'):
+    def __init__(self, path: str, output: str, timezone: str = 'UTC'):
+        """Init method. Calls generate and cleanup methods.
+
+        Args:
+            path (str): Path where the StreamingHistory.json are located.
+            output (str): Path where result png will be generated.
+            timezone (str): Indicates the timezone to use. Default is 'UTC'.
+        """
         self.path = path
         self.output = output
         self.timezone = timezone
@@ -18,7 +25,8 @@ class SpotifyRewrapped:
         self.cleanup()
 
     def generate(self):
-        """Calls the PlotGenerator, DataManager and ImageGenerator to create the result"""
+        """Calls the PlotGenerator, DataManager and ImageGenerator to create the result.
+        """
         # Configure matplotlib
         pg = PlotGenerator(path=self.path,
                            style='./resources/spotify.mplstyle',
@@ -121,7 +129,8 @@ class SpotifyRewrapped:
         print('Image generated successfully!')
 
     def cleanup(self):
-        """Removes all the intermediate png generated files"""
+        """Removes all the intermediate png generated files.
+        """
         # Cleanup
         os.remove(f'{self.path}/top-artists.png')
         os.remove(f'{self.path}/top-20-pie.png')

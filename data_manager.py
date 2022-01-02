@@ -1,10 +1,18 @@
-"""data_manager module. Contains the needed code to store the input data and query it"""
+"""data_manager module. Contains the needed code to store the input data and query it."""
+from typing import Dict
 import numpy as np
 import pandas as pd
 
 class DataManager:
-    """It's main responsability is to store the input data and allow querying it"""
-    def __init__(self, files=None, timezone='UTC'):
+    """It's main responsability is to store the input data and allow querying it."""
+    def __init__(self, files: list, timezone: str = 'UTC'):
+        """Reads and filters the input data.
+
+        Args:
+            files (list): List of paths where the input data is stored.
+            timezone (str): Indicates the timzeone to use. Default is 'UTC'.
+        """
+
         # Read input files
         self.df = pd.DataFrame()
         for file in files:
@@ -15,6 +23,7 @@ class DataManager:
         # Filter and process data
         self.df.endTime = pd.to_datetime(self.df.endTime).dt.tz_localize('UTC').dt.tz_convert(timezone)
         self.df = self.df[self.df.endTime.dt.year == 2021]
+        self.skipped = self.df[self.df.msPlayed <= 10000]
         self.df = self.df[self.df.msPlayed > 10000]
 
         # Add new columns
@@ -30,20 +39,37 @@ class DataManager:
                                             ordered=False)
         self.df['hours_played'] = self.df.msPlayed / (60 * 60 * 1000)
 
-    def get_top_n_artists(self, n):
-        """Returns a list of artist-streamed_hours of your top N streamed artists"""
+    def get_top_n_artists(self, n: int) -> pd.DataFrame:
+        """Calculates the N top streamed artists.
+
+        Args:
+            n (int): Number of artists
+
+        Returns:
+            pd.DataFrame: DataFrame. Columns are artistName and streamed_hours
+        """
         return self.df.groupby('artistName')\
                     .agg({'hours_played': np.sum})\
                     .sort_values(by=['hours_played'], ascending=True)\
                     .tail(n)
 
-    def get_streamed_hours_by_time_of_day(self):
-        """Returns a list of time_of_the_day-hours_played"""
+    def get_streamed_hours_by_time_of_day(self) -> pd.DataFrame:
+        """Calcualtes streamed hours by time of the day.
+
+        Returns:
+            pd.DataFrame: DataFrame. Index is time of the day and value is total hours_played.
+        """
         return self.df.groupby('hour').agg({'hours_played': np.sum})
 
-    def get_streamed_hours_by_day_of_week(self):
-        """Returns a list of streamed hours by day of the week. The indexes are
-        part_of_the_day and day_of_the_week"""
+    def get_streamed_hours_by_day_of_week(self) -> Dict:
+        """Calculates streamed hours by day of the week.
+
+        Returns:
+            Dict: Keys are [morning, afternoon, evening, night]. Each key contains a list of 7 int
+            elements. Each element represents a day of the week and its value is the number of
+            streamed hours on the specified part of the day on the specified day of the week.
+        """
+
         day_of_week = self.df.groupby(['part_of_the_day', 'day_of_week'])\
                             .agg({'hours_played': np.sum})
 
@@ -52,19 +78,34 @@ class DataManager:
                 'evening': day_of_week.loc['Evening'],
                 'night': day_of_week.loc['Night']}
 
-    def get_percent_hours_played_in_top_artists(self, n):
-        """Returns [top_hours, non_top_hours] being top_hours the hours that you
-        streamed your N top streamed artists and non_top_hours the hours that you
-        streamed the rest of the artists"""
+    def get_percent_hours_played_in_top_artists(self, n: int) -> list:
+        """Calculates the streamed hours that are contained on the top N streamed artists and
+        the streamed hours that are contained on the other artists.
+
+        Args:
+            n (int): Number of top artists to set the threshold.
+
+        Returns:
+            list: First element is the hours streaming the top N artists, second element is the
+            hours streaming other artists.
+        """
+
         artists = list(self.get_top_n_artists(n).index)
         total_hours = self.df.hours_played.sum()
         top_hours = self.df[self.df.artistName.isin(artists)].hours_played.sum()
 
         return [top_hours, total_hours - top_hours]
 
-    def get_cumsum_by_week(self, n):
-        """Returns the cumsum of your top N streamed artists. Index is artistName,
-        each artist has 52 rows, one for each week of the year"""
+    def get_cumsum_by_week(self, n: int) -> pd.DataFrame:
+        """Calculates the cumulative sum of the top N streamed artists by week.
+
+        Args:
+            n (int): Number of top artists to set the threshold.
+
+        Returns:
+            pd.DataFrame: Index is artist_name, value is cumulative hours.
+            Each artist has 52 rows. Rows are ordered by ascending.
+        """
         top_artists = self.get_top_n_artists(n)
 
         df2 = self.df[self.df.artistName.isin(top_artists.index)]
@@ -96,9 +137,13 @@ class DataManager:
 
         return hours_by_week
 
-    def all_i_want_for_christmas_is_you(self):
-        """Checks if you streamed at least 1 hour of All I Want for Christmas Is You,
-        returns the ammount of hours and True/False on a dictionary"""
+    def all_i_want_for_christmas_is_you(self) -> Dict:
+        """Calculates the total hours streaming All I Want for Christmas Is you by Mariah Carey.
+
+        Returns:
+            Dict: keys are 'achieved' (bool) and 'hours' (float). Achieved is True if hours is
+            more or equals than 1.
+        """
         data = self.df[(self.df.trackName.str.startswith('All I Want for Christmas Is You'))]
         hours = 0
         if data.shape[0] > 0:
@@ -108,23 +153,33 @@ class DataManager:
         return {'achieved': hours >= 1,
                 'hours': hours}
 
-    def deffinitive_halloween_experience(self):
-        """Checks if you streamed Thriller on 31/10/2021 or 1/11/2021,
-        returns True/False"""
+    def deffinitive_halloween_experience(self) -> bool:
+        """Checks if Thiller by Michael Jackson was streamed on 31/10 or 1/11.
+
+        Returns:
+            bool: True if the specified condition is acomplished.
+        """
         return self.df[(self.df.trackName == 'Thriller') &
                        (self.df.artistName == 'Michael Jackson') &
                        ((self.df.endTime.dt.month == 10) & (self.df.endTime.dt.day == 31) |
                         (self.df.endTime.dt.month == 11) & (self.df.endTime.dt.day == 1))].shape[0] > 0
 
-    def days_streamed(self):
-        """Checks if you streamed at least 1 track each day of 2021,
-        returns the ammount of days that you streamed and True/False on a dictionary"""
+    def days_streamed(self) -> Dict:
+        """Calculates the days that the user has streamed one or more tracks.
+
+        Returns:
+            Dict: keys are 'achieved' (bool) and 'days' (int). Achieved is True if days is 365.
+        """
         days = self.df.groupby('date').size().size
         return {'achieved': days == 365,
                 'days': days}
 
-    def variety_is_the_spice_of_life(self):
+    def variety_is_the_spice_of_life(self) -> bool:
         """Checks if your hours streaming your top 20 artists are less or equal
-        that 0.3 compared to the total streamed hours"""
+        that 0.3 compared to the total streamed hours.
+
+        Returns:
+            bool: True is the specified condition is acomplished.
+        """
         top_hours, others_hours = self.get_percent_hours_played_in_top_artists(20)
         return top_hours / (top_hours + others_hours) < 0.3

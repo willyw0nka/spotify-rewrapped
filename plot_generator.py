@@ -1,21 +1,33 @@
 """This module contains the PlotGenerator class which is responsible of generating
-the individual plots"""
+the individual plots."""
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 from  matplotlib import font_manager
+import pandas as pd
 
 class PlotGenerator:
-    """PlotGenerator. Contains the methods that allow creating the different plots"""
+    """PlotGenerator. Contains the methods that allow creating the different plots."""
     def __init__(self, path='./',
                  style='./resources/spotify.mplstyle',
                  font='./resources/gotham-medium.otf'):
+        """Initial configuration.
+
+        Args:
+            path (str, optional): Path where the plot images will be stored. Defaults to './'.
+            style (str, optional): MatPlotLib style. Defaults to './resources/spotify.mplstyle'.
+            font (str, optional): Font that MatPlotLib will use. Defaults to './resources/gotham-medium.otf'.
+        """        
         self.path = path
         font_manager.fontManager.addfont(font)
         mpl.style.use(style)
         mpl.rcParams['font.family'] = 'Gotham'
 
-    def top_artists_by_hours_streamed(self, data):
-        """Generates a barh plot showing the top 20 top streamed artists"""
+    def top_artists_by_hours_streamed(self, data: pd.DataFrame):
+        """Generates a barh plot showing the top 20 top streamed artists.
+
+        Args:
+            data (pd.DataFrame): Input data.
+        """
         plt.figure(figsize=(12, 6), dpi=60)
         plt.barh(data.index, data.hours_played)
         plt.suptitle('Top played artists', fontsize=30)
@@ -23,8 +35,12 @@ class PlotGenerator:
         plt.savefig(f'{self.path}/top-artists.png')
         plt.clf()
 
-    def streamed_hours_by_time_of_the_day(self, data):
-        """Generates a bar plot showing the streamed hours by time of the day"""
+    def streamed_hours_by_time_of_the_day(self, data: pd.DataFrame):
+        """Generates a bar plot showing the streamed hours by time of the day.
+
+        Args:
+            data (pd.DataFrame): Input data.
+        """
         plt.figure(figsize=(12, 6), dpi=60)
         plt.bar(data.index, data.hours_played)
         plt.xticks(range(24), range(24))
@@ -32,8 +48,12 @@ class PlotGenerator:
         plt.savefig(f'{self.path}/hourly-plot.png')
         plt.clf()
 
-    def streamed_hours_by_day_of_the_week(self, data):
-        """Generates a bar plot showing the streamed hours day of the week"""
+    def streamed_hours_by_day_of_the_week(self, data: pd.DataFrame):
+        """Generates a bar plot showing the streamed hours day of the week.
+
+        Args:
+            data (pd.DataFrame): Input data.
+        """
         plt.figure(figsize=(12, 6), dpi=60)
         days_labels = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 
@@ -61,9 +81,14 @@ class PlotGenerator:
         plt.savefig(f'{self.path}/day-of-the-week-plot.png')
         plt.clf()
 
-    def cumsum_by_week(self, data, top_artists):
+    def cumsum_by_week(self, data: pd.DataFrame, top_artists: list):
         """Generates a plot showing the cumulative streamed hours of your top 10
-        top streamed artists, xtick is weeks"""
+        top streamed artists, xtick is weeks.
+
+        Args:
+            data (pd.DataFrame): Input data.
+            top_artists (list): List of artist name that will be included on the plot.
+        """
         plt.figure(figsize=(12, 6), dpi=120)
         for artist in top_artists:
             selected_artist = data[data.index == artist]
@@ -78,9 +103,13 @@ class PlotGenerator:
         plt.savefig(f'{self.path}/artists-through-the-year.png')
         plt.clf()
 
-    def pie_top_streamed_artists(self, data):
+    def pie_top_streamed_artists(self, data: list):
         """Generates a pie plot showing the percentage of streamed hours that pertain
-        to your top 20 top streamed artists"""
+        to your top 20 top streamed artists.
+
+        Args:
+            data (list): Input data.
+        """
         plt.figure(figsize=(12, 6), dpi=60)
         colors = ['#1db954', '#535353']
         explode = (0.1, 0)
