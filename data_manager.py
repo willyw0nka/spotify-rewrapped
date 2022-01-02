@@ -5,11 +5,12 @@ import pandas as pd
 
 class DataManager:
     """It's main responsability is to store the input data and allow querying it."""
-    def __init__(self, files: list):
+    def __init__(self, files: list, timezone: str = 'UTC'):
         """Reads and filters the input data.
 
         Args:
             files (list): List of paths where the input data is stored.
+            timezone (str): Indicates the timzeone to use. Default is 'UTC'.
         """
 
         # Read input files
