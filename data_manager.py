@@ -37,6 +37,13 @@ class DataManager:
                     .sort_values(by=['hours_played'], ascending=True)\
                     .tail(n)
 
+    def get_top_quantile_artists(self, q):
+        """Returns a list of artist-streamed_hours of your top 1-q% streamed artists"""
+        hours_played_by_artist = self.df.groupby('artistName')\
+                    .agg({'hours_played': np.sum})
+        quantile = hours_played_by_artist['hours_played'].quantile(q)
+        return hours_played_by_artist[hours_played_by_artist['hours_played'] > quantile]
+
     def get_streamed_hours_by_time_of_day(self):
         """Returns a list of time_of_the_day-hours_played"""
         return self.df.groupby('hour').agg({'hours_played': np.sum})
@@ -57,6 +64,17 @@ class DataManager:
         streamed your N top streamed artists and non_top_hours the hours that you
         streamed the rest of the artists"""
         artists = list(self.get_top_n_artists(n).index)
+        total_hours = self.df.hours_played.sum()
+        top_hours = self.df[self.df.artistName.isin(artists)].hours_played.sum()
+
+        return [top_hours, total_hours - top_hours]
+
+
+    def get_percent_hours_played_in_top_quantile_artists(self, q):
+        """Returns [top_hours, non_top_hours] being top_hours the hours that you
+        streamed your 1-q% top streamed artists and non_top_hours the hours that you
+        streamed the rest of the artists"""
+        artists = list(self.get_top_quantile_artists(q).index)
         total_hours = self.df.hours_played.sum()
         top_hours = self.df[self.df.artistName.isin(artists)].hours_played.sum()
 
@@ -128,3 +146,9 @@ class DataManager:
         that 0.3 compared to the total streamed hours"""
         top_hours, others_hours = self.get_percent_hours_played_in_top_artists(20)
         return top_hours / (top_hours + others_hours) < 0.3
+
+    def pareto_principle(self):
+        """Checks if your hours streaming your top 20% artists are equal or more
+        that 80% compared to the total streamed hours"""
+        top_hours, others_hours = self.get_percent_hours_played_in_top_quantile_artists(0.8)
+        return top_hours / (top_hours + others_hours)
