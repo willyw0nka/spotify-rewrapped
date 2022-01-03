@@ -118,11 +118,19 @@ class SpotifyRewrapped:
                             'I streamed at least one track every day of 2021'
                             '\n({}/{})'.format(everyday['days'], 365), everyday['achieved'])
 
+        # Variety
+        pareto = dm.pareto_principle()
+        ig.show_achievement('\uf6fc', (25, 2050), (100, 100),
+                            'Pareto principle confirmed',
+                            'More than 80% of my total streams are from my'
+                            '\ntop 20% streamed artists'
+                            '\n({:.2f}%)'.format(pareto * 100,), pareto  > 0.8)
+
         # Print footer
         ig.write_text('Find me on github: https://github.com/willyw0nka/spotify-rewrapped',
-                      'achievement-title', (0, 2100), horizontal_center=True)
+                      'achievement-title', (0, 2250), horizontal_center=True)
         ig.write_text('This is not affiliated with Spotify', 'achievement-title',
-                      (0, 2150), color=ig.colors['light-gray'], horizontal_center=True)
+                      (0, 2300), color=ig.colors['light-gray'], horizontal_center=True)
 
         # Save image
         ig.save(self.output)
