@@ -118,7 +118,7 @@ class SpotifyRewrapped:
                             'I streamed at least one track every day of 2021'
                             '\n({}/{})'.format(everyday['days'], 365), everyday['achieved'])
 
-        # Variety
+        # Pareto principle
         pareto = dm.pareto_principle()
         ig.show_achievement('\uf6fc', (25, 2050), (100, 100),
                             'Pareto principle confirmed',

@@ -60,7 +60,7 @@ class DataManager:
             q (float): Quantile
 
         Returns:
-            pd.DataFrame: DataFrame. Columns are artistName and streamed_hours
+            pd.DataFrame: DataFrame. Columns are artistName and hours_played
         """
         hours_played_by_artist = self.df.groupby('artistName')\
                     .agg({'hours_played': np.sum})
@@ -110,10 +110,17 @@ class DataManager:
 
         return [top_hours, total_hours - top_hours]
 
-    def get_percent_hours_played_in_top_quantile_artists(self, q):
-        """Returns [top_hours, non_top_hours] being top_hours the hours that you
-        streamed your 1-q% top streamed artists and non_top_hours the hours that you
-        streamed the rest of the artists"""
+    def get_percent_hours_played_in_top_quantile_artists(self, q: float) -> list:
+        """Calculates the streamed hours that are contained on the top (1-q)% streamed artists and
+        the streamed hours that are contained on the other artists.
+
+        Args:
+            q (float): Quantile.
+
+        Returns:
+            list: First element is the hours streaming the top (1-q)% artists, second element is the
+            hours streaming other artists.
+        """
         artists = list(self.get_top_quantile_artists(q).index)
         total_hours = self.df.hours_played.sum()
         top_hours = self.df[self.df.artistName.isin(artists)].hours_played.sum()
@@ -208,8 +215,11 @@ class DataManager:
         top_hours, others_hours = self.get_percent_hours_played_in_top_artists(20)
         return top_hours / (top_hours + others_hours) < 0.3
 
-    def pareto_principle(self):
-        """Checks if your hours streaming your top 20% artists are equal or more
-        that 80% compared to the total streamed hours"""
+    def pareto_principle(self) -> float:
+        """Calculates the percentage of hours streaming your top 20% artists, compared to the total streamed hours.
+
+        Returns:
+            float: The percentage of hours streaming your top 20% artists, compared to total
+        """
         top_hours, others_hours = self.get_percent_hours_played_in_top_quantile_artists(0.8)
         return top_hours / (top_hours + others_hours)
