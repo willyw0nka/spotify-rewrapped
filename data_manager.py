@@ -53,6 +53,20 @@ class DataManager:
                     .sort_values(by=['hours_played'], ascending=True)\
                     .tail(n)
 
+    def get_top_quantile_artists(self, q: float) -> pd.DataFrame:
+        """Calculates the top streamed artists above the q quantile.
+
+        Args:
+            q (float): Quantile
+
+        Returns:
+            pd.DataFrame: DataFrame. Columns are artistName and hours_played
+        """
+        hours_played_by_artist = self.df.groupby('artistName')\
+                    .agg({'hours_played': np.sum})
+        quantile_value = hours_played_by_artist['hours_played'].quantile(q)
+        return hours_played_by_artist[hours_played_by_artist['hours_played'] > quantile_value]
+
     def get_streamed_hours_by_time_of_day(self) -> pd.DataFrame:
         """Calcualtes streamed hours by time of the day.
 
@@ -91,6 +105,23 @@ class DataManager:
         """
 
         artists = list(self.get_top_n_artists(n).index)
+        total_hours = self.df.hours_played.sum()
+        top_hours = self.df[self.df.artistName.isin(artists)].hours_played.sum()
+
+        return [top_hours, total_hours - top_hours]
+
+    def get_percent_hours_played_in_top_quantile_artists(self, q: float) -> list:
+        """Calculates the streamed hours that are contained on the top (1-q)% streamed artists and
+        the streamed hours that are contained on the other artists.
+
+        Args:
+            q (float): Quantile.
+
+        Returns:
+            list: First element is the hours streaming the top (1-q)% artists, second element is the
+            hours streaming other artists.
+        """
+        artists = list(self.get_top_quantile_artists(q).index)
         total_hours = self.df.hours_played.sum()
         top_hours = self.df[self.df.artistName.isin(artists)].hours_played.sum()
 
@@ -183,3 +214,12 @@ class DataManager:
         """
         top_hours, others_hours = self.get_percent_hours_played_in_top_artists(20)
         return top_hours / (top_hours + others_hours) < 0.3
+
+    def pareto_principle(self) -> float:
+        """Calculates the percentage of hours streaming your top 20% artists, compared to the total streamed hours.
+
+        Returns:
+            float: The percentage of hours streaming your top 20% artists, compared to total
+        """
+        top_hours, others_hours = self.get_percent_hours_played_in_top_quantile_artists(0.8)
+        return top_hours / (top_hours + others_hours)
