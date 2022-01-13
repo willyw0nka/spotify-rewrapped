@@ -1,15 +1,16 @@
 """This module contains the code corresponding to the basic GUI implemented for
-Windows users."""
+Windows users"""
 import tkinter as tk
 from tkinter import Tk, W, E, N, filedialog, messagebox
-from tkinter.ttk import Frame, Button, Entry, Label
+from tkinter.ttk import Frame, Button, Entry, Label, Combobox
 
 import glob
+import pytz
 
 from spotify_rewrapped import SpotifyRewrapped
 
 class SpotifyRewrappedGUI(Frame):
-    """SpotifyRewrappedGUI contains the code needed to render the GUI."""
+    """SpotifyRewrappedGUI contains the code needed to render the GUI"""
     def __init__(self, root):
         super().__init__()
         self.root = root
@@ -18,18 +19,16 @@ class SpotifyRewrappedGUI(Frame):
 
         self.init_ui()
 
-    def launch(self):       
-        """Runs an instance of SpotifyRewrapped to generate the desired png.
-        """
-        SpotifyRewrapped(path=self.input_path, output=self.output_file)
+    def launch(self):
+        """Runs an instance of SpotifyRewrapped to generate the desired png"""
+        SpotifyRewrapped(path=self.input_path, output=self.output_file, timezone=self.timezone_combo.get())
         messagebox.showinfo(title='Spotify rewrapped',
                             message='Success!\n'
                             'You can check your results at {}'.format(self.output_file))
 
     def set_input_path(self):
         """Displays an askdirectory dialog and saves the result to allow
-        calling SpotifyRewrapped.
-        """
+        calling SpotifyRewrapped"""
         self.input_path = filedialog.askdirectory()
         print(self.input_path)
         self.entry_input_path.configure(state='enabled')
@@ -45,8 +44,7 @@ class SpotifyRewrappedGUI(Frame):
 
     def set_output_path(self):
         """Displays an askdirectory dialog and saves the result to allow
-        calling SpotifyRewrapped.
-        """
+        calling SpotifyRewrapped"""
         self.output_file = filedialog.askdirectory()
         self.output_file += '/spotify-rewrapped.png'
         print(self.output_file)
@@ -56,8 +54,7 @@ class SpotifyRewrappedGUI(Frame):
         self.entry_output_file.configure(state='disabled')
 
     def init_ui(self):
-        """Displays all the elements that are contained in the GUI.
-        """
+        """Displays all the elements that are contained in the GUI"""
 
         self.master.title('Spotify rewrapped')
 
@@ -93,13 +90,19 @@ class SpotifyRewrappedGUI(Frame):
         self.listbox.grid(row=current_row, column=0, columnspan=4, sticky=E+W)
 
         current_row = 4
+        Label(self, text='Timezone:').grid(row=current_row, column=0)
+        self.timezone_combo = Combobox(self, values=pytz.common_timezones)
+        self.timezone_combo.grid(row=current_row, column=1)
+        self.timezone_combo.current(438)
+
+        current_row = 5
         Label(self, text='Output file:').grid(row=current_row, column=0)
         self.entry_output_file = Entry(self, state='disabled')
         self.entry_output_file.grid(row=current_row, column=1, sticky=E+W)
         Button(self, text='...', command=self.set_output_path).grid(row=current_row,
                                                                     column=3)
 
-        current_row = 5
+        current_row = 6
         Button(self, text='Generate', command=self.launch).grid(row=current_row,
                                                                 column=0,
                                                                 columnspan=2,
@@ -113,8 +116,7 @@ class SpotifyRewrappedGUI(Frame):
 
 
 def main():
-    """Entrypoint.
-    """
+    """Entrypoint"""
     root = Tk()
     SpotifyRewrappedGUI(root)
     root.mainloop()
