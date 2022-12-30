@@ -14,7 +14,7 @@ class DataManager:
 
         # Filter and process data
         self.df.endTime = pd.to_datetime(self.df.endTime).dt.tz_localize('UTC').dt.tz_convert(timezone)
-        self.df = self.df[self.df.endTime.dt.year == 2021]
+        self.df = self.df[self.df.endTime.dt.year == 2022]
         self.df = self.df[self.df.msPlayed > 10000]
 
         # Add new columns
@@ -109,7 +109,7 @@ class DataManager:
                 'hours': hours}
 
     def deffinitive_halloween_experience(self):
-        """Checks if you streamed Thriller on 31/10/2021 or 1/11/2021,
+        """Checks if you streamed Thriller on 31/10/2022 or 1/11/2022,
         returns True/False"""
         return self.df[(self.df.trackName == 'Thriller') &
                        (self.df.artistName == 'Michael Jackson') &
@@ -117,7 +117,7 @@ class DataManager:
                         (self.df.endTime.dt.month == 11) & (self.df.endTime.dt.day == 1))].shape[0] > 0
 
     def days_streamed(self):
-        """Checks if you streamed at least 1 track each day of 2021,
+        """Checks if you streamed at least 1 track each day of 2022,
         returns the ammount of days that you streamed and True/False on a dictionary"""
         days = self.df.groupby('date').size().size
         return {'achieved': days == 365,

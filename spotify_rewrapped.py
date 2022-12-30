@@ -107,7 +107,7 @@ class SpotifyRewrapped:
         everyday = dm.days_streamed()
         ig.show_achievement('\uf274', ((ig.W/2) + 25, 1900), (100, 100),
                             'Everyday routine',
-                            'I streamed at least one track every day of 2021'
+                            'I streamed at least one track every day of 2022'
                             '\n({}/{})'.format(everyday['days'], 365), everyday['achieved'])
 
         # Print footer
